@@ -10,16 +10,15 @@ const messageRouter = require("./src/routes/messageRoutes.js");
 const empAdminsenderRoutes = require("./src/routes/empadminsenderRouter.js");
 const adminRoutes = require("./src/routes/adminRegRoutes.js");
 const superAdminRoutes = require("./src/routes/superAdminRoutes.js");
-const billingTeamRoutes = require("./src/routes/billingTeamUserRoutes.js")
-const branchRoutes = require("./src/routes/branchRoutes.js")
-const managerRoute = require("./src/routes/managerRoutes.js")
-
+const billingTeamRoutes = require("./src/routes/billingTeamUserRoutes.js");
+const branchRoutes = require("./src/routes/branchRoutes.js");
+const managerRoute = require("./src/routes/managerRoutes.js");
 
 connectDb(); // Call the function to connect to the database
 
 const app = express();
 
-app.use(cors()); // Allow Cross-Origin Resource Sharing (CORS)
+app.use(cors({ origin: "https://atticachatapp.netlify.app" })); // Allow Cross-Origin Resource Sharing (CORS)
 
 const port = process.env.PORT || 5000;
 
@@ -428,9 +427,9 @@ app.use("/api/empadminsender", empAdminsenderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/superAdmin", superAdminRoutes);
 app.use("/api/serverControl", require("./src/routes/serverControlRoutes.js"));
-app.use("/api/billingTeam",billingTeamRoutes)
-app.use("/api/branch",branchRoutes)
-app.use("/api/manager",managerRoute)
+app.use("/api/billingTeam", billingTeamRoutes);
+app.use("/api/branch", branchRoutes);
+app.use("/api/manager", managerRoute);
 
 // Start the server
 app.listen(port, () => {

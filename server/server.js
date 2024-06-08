@@ -18,7 +18,9 @@ connectDb(); // Call the function to connect to the database
 
 const app = express();
 
-app.use(cors({ origin: "https://atticachatapp.netlify.app" })); // Allow Cross-Origin Resource Sharing (CORS)
+app.use(
+  cors({ origin: "https://atticachatapp.netlify.app" }, { credentials: true })
+); // Allow Cross-Origin Resource Sharing (CORS)
 
 const port = process.env.PORT || 5000;
 

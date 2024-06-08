@@ -6,6 +6,7 @@ import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { IoIosDocument } from "react-icons/io";
 import EmployeeSidebar from "./EmployeeSidebar";
+import { BASE_URL } from "../../constants";
 
 function ChatPage() {
   const [messages, setMessages] = useState([]);
@@ -16,8 +17,8 @@ function ChatPage() {
   const [recipientName, setRecipientName] = useState("");
   const [sender, setSender] = useState("");
   const [attachment, setAttachment] = useState(null);
-  const [userSearchQuery, setUserSearchQuery] = useState(""); 
-  const [adminSearchQuery, setAdminSearchQuery] = useState(""); 
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  const [adminSearchQuery, setAdminSearchQuery] = useState("");
   const messagesEndRef = useRef(null);
   const [admins, setAdmins] = useState([]);
 
@@ -30,7 +31,7 @@ function ChatPage() {
 
   const fetchMessages = (sender, recipient) => {
     axios
-      .get(`http://localhost:5001/api/getmessages/${recipient}/${sender}`)
+      .get(`${BASE_URL}/api/getmessages/${recipient}/${sender}`)
       .then((response) => {
         setMessages(response.data);
       })
@@ -41,7 +42,7 @@ function ChatPage() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/getAllManagers")
+      .get(`${BASE_URL}/api/getAllManagers`)
       .then((response) => {
         const filteredUsers = response.data.filter(
           (user) => user._id !== loggedInUserId
@@ -59,8 +60,6 @@ function ChatPage() {
     }
   }, [sender, recipient]);
 
- 
-
   const handleSendMessage = () => {
     if (!newMessage.trim() && !attachment) return;
 
@@ -69,12 +68,14 @@ function ChatPage() {
       recipient: recipient,
       text: newMessage,
       image: attachment?.type.startsWith("image/") ? attachment.url : null,
-      document: attachment?.type.startsWith("application/") ? attachment.url : null,
+      document: attachment?.type.startsWith("application/")
+        ? attachment.url
+        : null,
       video: attachment?.type.startsWith("video/") ? attachment.url : null,
     };
 
     axios
-      .post("http://localhost:5001/api/postmessages", messageData)
+      .post(`${BASE_URL}/api/postmessages`, messageData)
       .then((response) => {
         setMessages([...messages, response.data.data]);
         setNewMessage("");
@@ -113,11 +114,9 @@ function ChatPage() {
   //   localStorage.clear();
   // };
 
-
   return (
     <div className="flex h-screen">
       <div className="w-1/2 bg-gray-100 p-4">
-   
         <h1 className="text-2xl font-bold mb-4">All Employees</h1>
         <div className="relative mb-4">
           <input
@@ -168,16 +167,21 @@ function ChatPage() {
       <div className="w-4/5 p-4">
         <div className="flex justify-between items-center content-center mb-4">
           <h1 className="text-2xl font-bold">Chat with {recipientName}</h1>
-          <Link to={"/"} className="group relative flex items-center justify-end font-extrabold text-2xl  rounded-full p-3 md:p-5 ">
-        <BiLogOut />
-              </Link>
+          <Link
+            to={"/"}
+            className="group relative flex items-center justify-end font-extrabold text-2xl  rounded-full p-3 md:p-5 "
+          >
+            <BiLogOut />
+          </Link>
         </div>
         <div className="flex flex-col h-4/5 overflow-y-auto mb-4">
           {messages.map((message, index) => (
             <div
               key={index}
               className={`w-1/3 p-2 rounded-md mb-2 ${
-                message.sender === loggedInUserId ? "bg-blue-100" : "bg-gray-200"
+                message.sender === loggedInUserId
+                  ? "bg-blue-100"
+                  : "bg-gray-200"
               }`}
             >
               {message.content && message.content.text && (
@@ -197,7 +201,7 @@ function ChatPage() {
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
-                  <IoIosDocument  className="text-9xl"/>
+                  <IoIosDocument className="text-9xl" />
                 </a>
               )}
               {message.content && message.content.video && (
@@ -207,7 +211,8 @@ function ChatPage() {
                 </video>
               )}
               <span className="text-xs text-gray-500">
-                {message.sender === loggedInUserId && new Date(message.createdAt).toLocaleString()}
+                {message.sender === loggedInUserId &&
+                  new Date(message.createdAt).toLocaleString()}
               </span>
             </div>
           ))}

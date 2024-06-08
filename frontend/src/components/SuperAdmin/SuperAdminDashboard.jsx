@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Sidebar from "../admin/Sidebar";
 import EmployeeDetails from "../admin/EmployeeDetails";
 import AdminDetails from "./AdminDetails";
+import { BASE_URL } from "../../constants";
 
 const SuperAdminDashboard = () => {
   const [email, setEmail] = useState("");
@@ -12,13 +13,11 @@ const SuperAdminDashboard = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const user = { email, password }
+  const user = { email, password };
 
   const handlePanic = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5001/api/serverControl/crash`
-      );
+      const res = await axios.get(`${BASE_URL}/api/serverControl/crash`);
       console.log("updateotp   ", res.data);
     } catch (error) {
       console.error("Error fetching OTP", error);
@@ -33,7 +32,7 @@ const SuperAdminDashboard = () => {
     setError(null); // Clear previous errors
 
     try {
-      const response = await fetch("http://localhost:5001/api/admin/register", {
+      const response = await fetch(`${BASE_URL}/api/admin/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +55,7 @@ const SuperAdminDashboard = () => {
 
   return (
     <div className="lg:flex block">
-      <Sidebar/>
+      <Sidebar />
       <div className="flex-1 p-6">
         <div className="flex items-center mb-4 flex-col">
           <button
@@ -66,7 +65,10 @@ const SuperAdminDashboard = () => {
             Open Registration Form
           </button>
 
-          <button className="bg-red-500 p-2 w-16 rounded-sm my-2 text-white text-lg " onClick={handlePanic}>
+          <button
+            className="bg-red-500 p-2 w-16 rounded-sm my-2 text-white text-lg "
+            onClick={handlePanic}
+          >
             Panic
           </button>
           <AdminDetails />

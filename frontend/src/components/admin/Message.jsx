@@ -4,8 +4,12 @@ import { IoMdSend } from "react-icons/io";
 import { IoMdDocument } from "react-icons/io";
 import UploadImageModal from "./Pages/UploadImageModal";
 import { useParams } from "react-router-dom";
+import { BASE_URL } from "../../constants";
 
-const Message = ({ selectedGroupName: propsGroupName, selectedGrade: propsGrade }) => {
+const Message = ({
+  selectedGroupName: propsGroupName,
+  selectedGrade: propsGrade,
+}) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [showPrompt, setShowPrompt] = useState(false);
@@ -13,7 +17,8 @@ const Message = ({ selectedGroupName: propsGroupName, selectedGrade: propsGrade 
   const messagesEndRef = useRef(null);
   const adminId = localStorage.getItem("AdminId");
 
-  const { selectedGroupName: paramsGroupName, selectedGrade: paramsGrade } = useParams();
+  const { selectedGroupName: paramsGroupName, selectedGrade: paramsGrade } =
+    useParams();
 
   const selectedGroupName = propsGroupName || paramsGroupName;
   const selectedGrade = propsGrade || paramsGrade;
@@ -29,7 +34,7 @@ const Message = ({ selectedGroupName: propsGroupName, selectedGrade: propsGrade 
   const fetchMessages = async () => {
     if (selectedGroupName && selectedGrade) {
       try {
-        const response = await axios.get("http://localhost:5001/api/messages", {
+        const response = await axios.get(`${BASE_URL}/api/messages`, {
           params: {
             group: selectedGroupName,
             grade: selectedGrade,
@@ -62,10 +67,7 @@ const Message = ({ selectedGroupName: propsGroupName, selectedGrade: propsGrade 
         grade: selectedGrade,
       };
 
-      const response = await axios.post(
-        "http://localhost:5001/api/messages",
-        newMessage
-      );
+      const response = await axios.post(`${BASE_URL}/api/messages`, newMessage);
 
       if (response.status === 201) {
         // Update messages state with the new message
@@ -87,7 +89,7 @@ const Message = ({ selectedGroupName: propsGroupName, selectedGrade: propsGrade 
 
   const checkForNewMessages = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/api/messages", {
+      const response = await axios.get(`${BASE_URL}/api/messages`, {
         params: {
           group: selectedGroupName,
           grade: selectedGrade,
@@ -144,41 +146,51 @@ const Message = ({ selectedGroupName: propsGroupName, selectedGrade: propsGrade 
                   <div
                     key={index}
                     className={`flex ${
-                      msg.employeeId === adminId ? "justify-end" : "justify-start"
+                      msg.employeeId === adminId
+                        ? "justify-end"
+                        : "justify-start"
                     } mb-2`}
                   >
                     <div
                       className={`${
-                        msg.employeeId === adminId ? "bg-[#5443c3] text-white rounded-tr-3xl rounded-bl-3xl" : "bg-[#ffffff] text-[#5443c3] rounded-tl-3xl rounded-br-3xl"
+                        msg.employeeId === adminId
+                          ? "bg-[#5443c3] text-white rounded-tr-3xl rounded-bl-3xl"
+                          : "bg-[#ffffff] text-[#5443c3] rounded-tl-3xl rounded-br-3xl"
                       } py-2 px-4 rounded-lg max-w-md`}
                     >
-                      <p className={`text-sm font-bold ${
-                        msg.employeeId === adminId ? "text-green" : "text-purple-800"
-                      }`}>
+                      <p
+                        className={`text-sm font-bold ${
+                          msg.employeeId === adminId
+                            ? "text-green"
+                            : "text-purple-800"
+                        }`}
+                      >
                         {msg.employeeId}
                         <span> : </span>
                       </p>
-                      <p className="text-sm">
-                        {/* {msg.message} */}
-                      </p>
+                      <p className="text-sm">{/* {msg.message} */}</p>
                       <p className="text-sm text-black">{msg.message}</p>
                       {msg.Document && (
-                  <div className='text-8xl my-2'>
-                    <a href={msg.Document} download target="_blank" rel="noopener noreferrer">
-                      <IoMdDocument />
-                    </a>
-                  </div>
-                )}
-                 {msg.video && (
-                  <div className='text-8xl my-2'>
-                    <video src={msg.video} controls >
-                    </video>
-                  </div>
-                )}
+                        <div className="text-8xl my-2">
+                          <a
+                            href={msg.Document}
+                            download
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <IoMdDocument />
+                          </a>
+                        </div>
+                      )}
+                      {msg.video && (
+                        <div className="text-8xl my-2">
+                          <video src={msg.video} controls></video>
+                        </div>
+                      )}
 
-                <div>
-                  <img src={msg.Image} alt="" className='rounded-lg' />
-                </div>
+                      <div>
+                        <img src={msg.Image} alt="" className="rounded-lg" />
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -191,7 +203,7 @@ const Message = ({ selectedGroupName: propsGroupName, selectedGrade: propsGrade 
         <div className="mx-auto flex items-center p-4 sticky bottom-0 z-10 bg-[#f6f5fb] w-full shadow-purple-800">
           <input
             type="text"
-            className="flex-1 py-2 px-4 rounded-l-lg border-t border-b border-l text-gray-800 border-gray-200 bg-white w-full focus:outline-none placeholder-[#5443c3]" 
+            className="flex-1 py-2 px-4 rounded-l-lg border-t border-b border-l text-gray-800 border-gray-200 bg-white w-full focus:outline-none placeholder-[#5443c3]"
             placeholder="Type your message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -202,7 +214,10 @@ const Message = ({ selectedGroupName: propsGroupName, selectedGrade: propsGrade 
           >
             <IoMdSend />
           </button>
-         <UploadImageModal selectedGroupName={selectedGroupName} selectedGrade={selectedGrade}  />
+          <UploadImageModal
+            selectedGroupName={selectedGroupName}
+            selectedGrade={selectedGrade}
+          />
         </div>
       </div>
 

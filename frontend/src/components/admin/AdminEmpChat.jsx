@@ -5,6 +5,7 @@ import FileUploadModel from "../employee/FileUploadModel";
 import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { IoIosDocument } from "react-icons/io";
+import { BASE_URL } from "../../constants";
 
 function AdminEmpChat() {
   const [messages, setMessages] = useState([]);
@@ -15,12 +16,12 @@ function AdminEmpChat() {
   const [recipientName, setRecipientName] = useState("");
   const [sender, setSender] = useState("");
   const [attachment, setAttachment] = useState(null);
-  const [userSearchQuery, setUserSearchQuery] = useState(""); 
-  const [adminSearchQuery, setAdminSearchQuery] = useState(""); 
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  const [adminSearchQuery, setAdminSearchQuery] = useState("");
   const messagesEndRef = useRef(null);
   const [admins, setAdmins] = useState([]);
-  console.log("Admin SmS",messages)
-  console.log(recipient,sender) 
+  console.log("Admin SmS", messages);
+  console.log(recipient, sender);
   const handleClick = (id, name) => {
     setSender(loggedInUserId);
     setRecipient(id);
@@ -30,7 +31,9 @@ function AdminEmpChat() {
 
   const fetchMessages = (sender, recipient) => {
     axios
-      .get(`http://localhost:5001/api/empadminsender/getadminmessages/${recipient}/${sender}`)
+      .get(
+        `${BASE_URL}/api/empadminsender/getadminmessages/${recipient}/${sender}`
+      )
       .then((response) => {
         setMessages(response.data);
       })
@@ -41,7 +44,7 @@ function AdminEmpChat() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/employeeRegistration/")
+      .get(`${BASE_URL}/api/employeeRegistration/`)
       .then((response) => {
         const filteredUsers = response.data.filter(
           (user) => user._id !== loggedInUserId
@@ -61,7 +64,7 @@ function AdminEmpChat() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/admin/getAllAdmin")
+      .get(`${BASE_URL}/api/admin/getAllAdmin`)
       .then((response) => {
         const filteredAdmins = response.data.filter(
           (admin) => admin._id !== loggedInUserId
@@ -85,12 +88,14 @@ function AdminEmpChat() {
       recipient: recipient,
       text: newMessage,
       image: attachment?.type.startsWith("image/") ? attachment.url : null,
-      document: attachment?.type.startsWith("application/") ? attachment.url : null,
+      document: attachment?.type.startsWith("application/")
+        ? attachment.url
+        : null,
       video: attachment?.type.startsWith("video/") ? attachment.url : null,
     };
 
     axios
-      .post("http://localhost:5001/api/empadminsender/createMessage", messageData)
+      .post(`${BASE_URL}/api/empadminsender/createMessage`, messageData)
       .then((response) => {
         setMessages([...messages, response.data.data]);
         setNewMessage("");
@@ -129,11 +134,10 @@ function AdminEmpChat() {
   //   localStorage.clear();
   // };
 
-
   return (
     <div className="flex h-screen">
       <div className="w-1/5 bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-4">All Admins</h1>
+        <h1 className="text-2xl font-bold mb-4">All Admins</h1>
         <div className="relative mb-4">
           <input
             type="text"
@@ -179,56 +183,68 @@ function AdminEmpChat() {
             </div>
           ))}
         </div>
-        
       </div>
       <div className="w-4/5 p-4">
         <div className="flex justify-between items-center content-center mb-4">
           <h1 className="text-2xl font-bold">Chat with {recipientName}</h1>
-          <Link to={"/"} className="group relative flex items-center justify-end font-extrabold text-2xl  rounded-full p-3 md:p-5 ">
-        <BiLogOut />
-              </Link>
+          <Link
+            to={"/"}
+            className="group relative flex items-center justify-end font-extrabold text-2xl  rounded-full p-3 md:p-5 "
+          >
+            <BiLogOut />
+          </Link>
         </div>
         <div className="flex flex-col h-4/5 overflow-y-auto mb-4">
-  {messages.map((message, index) => (
-    <div
-      key={index}
-      className={`flex ${message.sender === loggedInUserId ? 'justify-end' : 'justify-start'} mb-2`}
-    >
-      <div
-        className={`w-1/3 p-2 rounded-md ${
-          message.sender === loggedInUserId ? 'bg-blue-100' : 'bg-gray-200'
-        }`}
-      >
-        {message.content && message.content.text && (
-          <p className="text-sm">{message.content.text}</p>
-        )}
-        {message.content && message.content.image && (
-          <img src={message.content.image} alt="Image" className="max-w-xs" />
-        )}
-        {message.content && message.content.document && (
-          <a
-            href={message.content.document}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
-            <IoIosDocument className="text-9xl" />
-          </a>
-        )}
-        {message.content && message.content.video && (
-          <video controls className="max-w-xs">
-            <source src={message.content.video} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        )}
-        <span className="text-xs text-gray-500">
-          {new Date(message.createdAt).toLocaleString()}
-        </span>
-      </div>
-    </div>
-  ))}
-  <div ref={messagesEndRef} />
-</div>
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`flex ${
+                message.sender === loggedInUserId
+                  ? "justify-end"
+                  : "justify-start"
+              } mb-2`}
+            >
+              <div
+                className={`w-1/3 p-2 rounded-md ${
+                  message.sender === loggedInUserId
+                    ? "bg-blue-100"
+                    : "bg-gray-200"
+                }`}
+              >
+                {message.content && message.content.text && (
+                  <p className="text-sm">{message.content.text}</p>
+                )}
+                {message.content && message.content.image && (
+                  <img
+                    src={message.content.image}
+                    alt="Image"
+                    className="max-w-xs"
+                  />
+                )}
+                {message.content && message.content.document && (
+                  <a
+                    href={message.content.document}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    <IoIosDocument className="text-9xl" />
+                  </a>
+                )}
+                {message.content && message.content.video && (
+                  <video controls className="max-w-xs">
+                    <source src={message.content.video} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+                <span className="text-xs text-gray-500">
+                  {new Date(message.createdAt).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
 
         <div className="flex justify-center items-center w-3/4 fixed bottom-0 mb-0 pb-0">
           <input

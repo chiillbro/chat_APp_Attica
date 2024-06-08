@@ -5,6 +5,7 @@ import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { IoIosDocument } from "react-icons/io";
 import FileUploadModel from "../employee/FileUploadModel";
+import { BASE_URL } from "../../constants";
 
 function ManagerChat() {
   const [messages, setMessages] = useState([]);
@@ -15,7 +16,7 @@ function ManagerChat() {
   const [recipientName, setRecipientName] = useState("");
   const [sender, setSender] = useState("");
   const [attachment, setAttachment] = useState(null);
-  const [userSearchQuery, setUserSearchQuery] = useState(""); 
+  const [userSearchQuery, setUserSearchQuery] = useState("");
   const messagesEndRef = useRef(null);
   const [admins, setAdmins] = useState([]);
 
@@ -29,7 +30,7 @@ function ManagerChat() {
 
   const fetchMessages = (sender, recipient) => {
     axios
-      .get(`http://localhost:5001/api/getmessages/${recipient}/${sender}`)
+      .get(`${BASE_URL}/api/getmessages/${recipient}/${sender}`)
       .then((response) => {
         setMessages(response.data);
       })
@@ -40,7 +41,7 @@ function ManagerChat() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/billingTeam/getAllUsers")
+      .get(`${BASE_URL}/api/billingTeam/getAllUsers`)
       .then((response) => {
         const filteredUsers = response.data.users.filter(
           (user) => user._id !== loggedInUserId
@@ -70,12 +71,14 @@ function ManagerChat() {
       recipient: recipient,
       text: newMessage,
       image: attachment?.type.startsWith("image/") ? attachment.url : null,
-      document: attachment?.type.startsWith("application/") ? attachment.url : null,
+      document: attachment?.type.startsWith("application/")
+        ? attachment.url
+        : null,
       video: attachment?.type.startsWith("video/") ? attachment.url : null,
     };
 
     axios
-      .post("http://localhost:5001/api/postmessages", messageData)
+      .post(`${BASE_URL}/api/postmessages`, messageData)
       .then((response) => {
         setMessages([...messages, response.data.data]);
         setNewMessage("");
@@ -135,7 +138,10 @@ function ManagerChat() {
       <div className="w-4/5 p-4">
         <div className="flex justify-between items-center content-center mb-4">
           <h1 className="text-2xl font-bold">Chat with {recipientName}</h1>
-          <Link to={"/"} className="group relative flex items-center justify-end font-extrabold text-2xl rounded-full p-3 md:p-5">
+          <Link
+            to={"/"}
+            className="group relative flex items-center justify-end font-extrabold text-2xl rounded-full p-3 md:p-5"
+          >
             <BiLogOut />
           </Link>
         </div>
@@ -144,7 +150,9 @@ function ManagerChat() {
             <div
               key={index}
               className={`p-2 rounded-md mb-2 max-w-xs ${
-                message.sender === loggedInUserId ? "bg-blue-100 self-end" : "bg-gray-200 self-start"
+                message.sender === loggedInUserId
+                  ? "bg-blue-100 self-end"
+                  : "bg-gray-200 self-start"
               }`}
             >
               {message.content && message.content.text && (
@@ -195,7 +203,9 @@ function ManagerChat() {
             id="file-upload"
           />
           <label htmlFor="file-upload" className="cursor-pointer p-2">
-            <span className="bg-gray-200 hover:bg-gray-300 p-2 rounded">Attach</span>
+            <span className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
+              Attach
+            </span>
           </label>
           <button
             onClick={handleSendMessage}

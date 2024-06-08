@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { BASE_URL } from "../../constants";
 
 const Modal = ({ show, onClose, employee, onUpdate }) => {
   const [formData, setFormData] = useState({ ...employee });
@@ -29,7 +30,9 @@ const Modal = ({ show, onClose, employee, onUpdate }) => {
         <h2 className="text-2xl font-bold mb-4">Edit Employee Details</h2>
         <form>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Name
+            </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               name="name"
@@ -38,7 +41,9 @@ const Modal = ({ show, onClose, employee, onUpdate }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Employee ID</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Employee ID
+            </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               name="employeeId"
@@ -47,7 +52,9 @@ const Modal = ({ show, onClose, employee, onUpdate }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">State</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              State
+            </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               name="state"
@@ -56,7 +63,9 @@ const Modal = ({ show, onClose, employee, onUpdate }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Language</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Language
+            </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               name="language"
@@ -65,7 +74,9 @@ const Modal = ({ show, onClose, employee, onUpdate }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Grade</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Grade
+            </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               name="grade"
@@ -74,7 +85,9 @@ const Modal = ({ show, onClose, employee, onUpdate }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Team Name</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Team Name
+            </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
               name="group"
@@ -112,10 +125,10 @@ const EmployeeDetails = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const res = await axios.get('http://localhost:5001/api/employeeRegistration');
+        const res = await axios.get(`${BASE_URL}/api/employeeRegistration`);
         setEmployees(res.data);
       } catch (error) {
-        console.error('Error fetching employees', error);
+        console.error("Error fetching employees", error);
       }
     };
 
@@ -130,19 +143,30 @@ const EmployeeDetails = () => {
   const handleDelete = async (employeeId) => {
     try {
       alert("Are you sure? The data will be deleted permanently.");
-      await axios.delete(`http://localhost:5001/api/employeeRegistration/${employeeId}`);
-      setEmployees(employees.filter(employee => employee.employeeId !== employeeId));
+      await axios.delete(`${BASE_URL}/api/employeeRegistration/${employeeId}`);
+      setEmployees(
+        employees.filter((employee) => employee.employeeId !== employeeId)
+      );
     } catch (error) {
-      console.error('Error deleting employee', error);
+      console.error("Error deleting employee", error);
     }
   };
 
   const handleUpdate = async (updatedEmployee) => {
     try {
-      const res = await axios.put(`http://localhost:5001/api/employeeRegistration/${updatedEmployee.employeeId}`, updatedEmployee);
-      setEmployees(employees.map(employee => employee.employeeId === updatedEmployee.employeeId ? res.data.updatedEmployee : employee));
+      const res = await axios.put(
+        `${BASE_URL}/api/employeeRegistration/${updatedEmployee.employeeId}`,
+        updatedEmployee
+      );
+      setEmployees(
+        employees.map((employee) =>
+          employee.employeeId === updatedEmployee.employeeId
+            ? res.data.updatedEmployee
+            : employee
+        )
+      );
     } catch (error) {
-      console.error('Error updating employee', error);
+      console.error("Error updating employee", error);
     }
   };
 
@@ -153,29 +177,59 @@ const EmployeeDetails = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee ID</th>
-              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
-              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Language</th>
-              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
-              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team Name</th>
-              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Employee ID
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                State
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Language
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Grade
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Team Name
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {employees.map(employee => (
+            {employees.map((employee) => (
               <tr key={employee._id}>
                 <td className="py-4 px-4 whitespace-nowrap">{employee.name}</td>
-                <td className="py-4 px-4 whitespace-nowrap">{employee.employeeId}</td>
-                <td className="py-4 px-4 whitespace-nowrap">{employee.state}</td>
-                <td className="py-4 px-4 whitespace-nowrap">{employee.language}</td>
-                <td className="py-4 px-4 whitespace-nowrap">{employee.grade}</td>
-                <td className="py-4 px-4 whitespace-nowrap">{employee.group}</td>
+                <td className="py-4 px-4 whitespace-nowrap">
+                  {employee.employeeId}
+                </td>
+                <td className="py-4 px-4 whitespace-nowrap">
+                  {employee.state}
+                </td>
+                <td className="py-4 px-4 whitespace-nowrap">
+                  {employee.language}
+                </td>
+                <td className="py-4 px-4 whitespace-nowrap">
+                  {employee.grade}
+                </td>
+                <td className="py-4 px-4 whitespace-nowrap">
+                  {employee.group}
+                </td>
                 <td className="py-4 px-4 whitespace-nowrap flex">
-                  <button onClick={() => handleEdit(employee)} className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  <button
+                    onClick={() => handleEdit(employee)}
+                    className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(employee.employeeId)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                  <button
+                    onClick={() => handleDelete(employee.employeeId)}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  >
                     Delete
                   </button>
                 </td>
@@ -190,7 +244,7 @@ const EmployeeDetails = () => {
           onClose={() => setShowModal(false)}
           employee={selectedEmployee}
           onUpdate={handleUpdate}
-        />  
+        />
       )}
     </div>
   );

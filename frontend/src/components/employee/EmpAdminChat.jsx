@@ -5,6 +5,7 @@ import FileUploadModel from "./FileUploadModel";
 import { BiLogOut } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { IoIosDocument } from "react-icons/io";
+import { BASE_URL } from "../../constants";
 
 function EmpAdminChat() {
   const [messages, setMessages] = useState([]);
@@ -15,8 +16,8 @@ function EmpAdminChat() {
   const [recipientName, setRecipientName] = useState("");
   const [sender, setSender] = useState("");
   const [attachment, setAttachment] = useState(null);
-  const [userSearchQuery, setUserSearchQuery] = useState(""); 
-  const [adminSearchQuery, setAdminSearchQuery] = useState(""); 
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  const [adminSearchQuery, setAdminSearchQuery] = useState("");
   const messagesEndRef = useRef(null);
   const [admins, setAdmins] = useState([]);
 
@@ -29,7 +30,7 @@ function EmpAdminChat() {
 
   const fetchMessages = (sender, recipient) => {
     axios
-      .get(`http://localhost:5001/api/empadminsender/getmessages/${recipient}/${sender}`)
+      .get(`${BASE_URL}/api/empadminsender/getmessages/${recipient}/${sender}`)
       .then((response) => {
         setMessages(response.data);
       })
@@ -40,7 +41,7 @@ function EmpAdminChat() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/employeeRegistration/")
+      .get(`${BASE_URL}/api/employeeRegistration/`)
       .then((response) => {
         const filteredUsers = response.data.filter(
           (user) => user._id !== loggedInUserId
@@ -60,7 +61,7 @@ function EmpAdminChat() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/admin/getAllAdmin")
+      .get(`${BASE_URL}/api/admin/getAllAdmin`)
       .then((response) => {
         const filteredAdmins = response.data.filter(
           (admin) => admin._id !== loggedInUserId
@@ -84,12 +85,14 @@ function EmpAdminChat() {
       recipient: recipient,
       text: newMessage,
       image: attachment?.type.startsWith("image/") ? attachment.url : null,
-      document: attachment?.type.startsWith("application/") ? attachment.url : null,
+      document: attachment?.type.startsWith("application/")
+        ? attachment.url
+        : null,
       video: attachment?.type.startsWith("video/") ? attachment.url : null,
     };
 
     axios
-      .post("http://localhost:5001/api/empadminsender/createMessage", messageData)
+      .post(`${BASE_URL}/api/empadminsender/createMessage`, messageData)
       .then((response) => {
         setMessages([...messages, response.data.data]);
         setNewMessage("");
@@ -128,11 +131,9 @@ function EmpAdminChat() {
   //   localStorage.clear();
   // };
 
-
   return (
     <div className="flex h-screen">
       <div className="w-1/4 bg-gray-100 p-4">
-      
         {/* <h1 className="text-2xl font-bold mb-4">All Employees</h1>
         <div className="relative mb-4">
           <input
@@ -183,16 +184,21 @@ function EmpAdminChat() {
       <div className="w-4/5 p-4">
         <div className="flex justify-between items-center content-center mb-4">
           <h1 className="text-2xl font-bold">Chat with {recipientName}</h1>
-          <Link to={"/"} className="group relative flex items-center justify-end font-extrabold text-2xl  rounded-full p-3 md:p-5 ">
-        <BiLogOut />
-              </Link>
+          <Link
+            to={"/"}
+            className="group relative flex items-center justify-end font-extrabold text-2xl  rounded-full p-3 md:p-5 "
+          >
+            <BiLogOut />
+          </Link>
         </div>
         <div className="flex flex-col h-4/5 overflow-y-auto mb-4">
           {messages.map((message, index) => (
             <div
               key={index}
               className={`w-1/3 p-2 rounded-md mb-2 ${
-                message.sender === loggedInUserId ? "bg-blue-100" : "bg-gray-200"
+                message.sender === loggedInUserId
+                  ? "bg-blue-100"
+                  : "bg-gray-200"
               }`}
             >
               {message.content && message.content.text && (
@@ -212,7 +218,7 @@ function EmpAdminChat() {
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
-                  <IoIosDocument  className="text-9xl"/>
+                  <IoIosDocument className="text-9xl" />
                 </a>
               )}
               {message.content && message.content.video && (
@@ -222,7 +228,8 @@ function EmpAdminChat() {
                 </video>
               )}
               <span className="text-xs text-gray-500">
-                {message.sender === loggedInUserId && new Date(message.createdAt).toLocaleString()}
+                {message.sender === loggedInUserId &&
+                  new Date(message.createdAt).toLocaleString()}
               </span>
             </div>
           ))}

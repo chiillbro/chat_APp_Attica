@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BASE_URL } from "../../constants";
 
 const BillingRegistrationModal = ({ closeModal }) => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ const BillingRegistrationModal = ({ closeModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5001/api/billingTeam/register", {
+      const response = await fetch(`${BASE_URL}/api/billingTeam/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

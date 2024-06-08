@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Sidebar from "../Sidebar";
 import { IoMdDocument } from "react-icons/io";
+import { BASE_URL } from "../../../constants";
 
 const adminId = localStorage.getItem("AdminId");
 
@@ -13,7 +14,7 @@ const LiveChatMessages = () => {
     const fetchLiveChatMessages = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5001/api/messages/last-24-hours"
+          `${BASE_URL}/api/messages/last-24-hours`
         );
         setLiveChatMessages(response.data);
       } catch (error) {

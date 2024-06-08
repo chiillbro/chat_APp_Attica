@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BASE_URL } from "../../constants";
 
 const ManagerRegisterModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -25,16 +26,13 @@ const ManagerRegisterModal = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        "http://localhost:5001/api/manager/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/manager/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
       if (response.ok) {
         console.log("Registration Successfully");
         onclose();
